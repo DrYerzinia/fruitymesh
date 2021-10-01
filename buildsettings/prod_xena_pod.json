@@ -1,0 +1,14 @@
+{
+	"additionalArgs":{
+		"settings":"prod_xena_pod",
+		"make":"prod_xena_pod",
+		"platform":"nrf52",
+		"flash":"",
+		"devicetype":1
+	},
+	"buildSettings":{
+		"environmentVariables":{
+			"FEATURESET":"prod_xena_pod"
+		}
+	}
+}

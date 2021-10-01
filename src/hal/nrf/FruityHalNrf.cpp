@@ -193,7 +193,7 @@ static const char* getBleEventNameString(u16 bleEventId);
 u32 ClearGeneralPurposeRegister(u32 gpregId, u32 mask);
 u32 WriteGeneralPurposeRegister(u32 gpregId, u32 mask);
 static uint32_t sdAppEvtWaitAnomaly87();
-#if IS_ACTIVE(ASSET_MODULE)
+#if defined(TWI_ENABLED) || IS_ACTIVE(ASSET_MODULE)
 //Both twiTurnOnAnomaly89() and twiTurnOffAnomaly89() is only added if ACTIVATE_ASSET_MODULE is active because currently
 //twi is only activated for ASSET_MODULE so to avoid the cpp warning of unused functions. Tracked in BR-2082.
 #if !defined(SIM_ENABLED)
@@ -3598,7 +3598,7 @@ extern "C"{
 
 #define __________________TWI____________________
 
-#if IS_ACTIVE(ASSET_MODULE)
+#if defined(TWI_ENABLED) || IS_ACTIVE(ASSET_MODULE)
 
 #ifndef SIM_ENABLED
 #define TWI_INSTANCE_ID     1
@@ -4399,7 +4399,7 @@ static uint32_t sdAppEvtWaitAnomaly87()
     return sd_app_evt_wait();
 }
 
-#if IS_ACTIVE(ASSET_MODULE)
+#if defined(TWI_ENABLED) || IS_ACTIVE(ASSET_MODULE)
 //Both twiTurnOnAnomaly89() and twiTurnOffAnomaly89() is only added if ACTIVATE_ASSET_MODULE is active because currently
 //twi is only activated for ASSET_MODULE so to avoid the cpp warning of unused functions. Tracked in BR-2082.
 #if !defined(SIM_ENABLED)
