@@ -136,6 +136,7 @@ void Logger::Log_f(bool printLine, bool isJson, bool isEndOfMessage, bool skipJs
 
 void Logger::LogTag_f(LogType logType, const char* file, i32 line, const char* tag, const char* message, ...) const
 {
+    
 #ifdef SIM_ENABLED
     //Early return improves the simulator performance if the terminal is not active in the simulator
     if (!GS->terminal.IsTermActive()) return;

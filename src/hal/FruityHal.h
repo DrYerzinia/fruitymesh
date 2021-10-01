@@ -338,6 +338,9 @@ namespace FruityHal
         BAUDRATE_38400,
     };
 
+    void PrintString(char const * str);
+    void PrintNumber(u32 val);
+
     // ######################### Ble Stack and Event Handling ############################
     ErrorType BleStackInit();
     void BleStackDeinit();

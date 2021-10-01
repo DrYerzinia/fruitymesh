@@ -129,7 +129,7 @@ static_assert(false, "Featureset was not defined, which is mandatory!");
 //of connections configured in the ble stack (necessary for array sizing)
 //Cannot be changed in featureset as this must also be changed in the
 //linker script ram section at the same time
-#define TOTAL_NUM_CONNECTIONS 5
+#define TOTAL_NUM_CONNECTIONS 4
 
 // ########### Mesh Settings ##########################################
 
@@ -145,17 +145,17 @@ static_assert(false, "Featureset was not defined, which is mandatory!");
 
 // Each of the connections has a buffer for outgoing packets, this is its size in bytes
 #ifndef MAX_MESH_PACKET_SIZE
-#define MAX_MESH_PACKET_SIZE 200
+#define MAX_MESH_PACKET_SIZE 20
 #endif
 
 // The size of each send queue chunk in bytes. See: ConnectionQueueMemoryChunk
 #ifndef CONNECTION_QUEUE_MEMORY_CHUNK_SIZE
-#define CONNECTION_QUEUE_MEMORY_CHUNK_SIZE 256
+#define CONNECTION_QUEUE_MEMORY_CHUNK_SIZE 64
 #endif
 
 // The total amount of send queue chunks. See: ConnectionQueueMemoryChunk
 #ifndef CONNECTION_QUEUE_MEMORY_CHUNK_AMOUNT
-#define CONNECTION_QUEUE_MEMORY_CHUNK_AMOUNT 40
+#define CONNECTION_QUEUE_MEMORY_CHUNK_AMOUNT 20
 #endif
 
 // The maximum amount of chunks one connection can hold is limited by CONNECTION_QUEUE_MEMORY_MAX_CHUNKS_PER_CONNECTION.
@@ -163,7 +163,7 @@ static_assert(false, "Featureset was not defined, which is mandatory!");
 // Reestablishment. In such a case the rest of the connections have to share the rest of the chunks. If this rest gets
 // to low, a high amount of dropped packets is to be expected and should therefore be avoided.
 #ifndef CONNECTION_QUEUE_MEMORY_MAX_CHUNKS_PER_CONNECTION
-#define CONNECTION_QUEUE_MEMORY_MAX_CHUNKS_PER_CONNECTION 25
+#define CONNECTION_QUEUE_MEMORY_MAX_CHUNKS_PER_CONNECTION 6
 #endif
 
 // Each connection does also have a buffer to assemble packets that were split into 20 byte chunks
@@ -190,7 +190,7 @@ static_assert(false, "Featureset was not defined, which is mandatory!");
 
 //The maximum number of advertising jobs that can be managed by the AdvertisingController
 #ifndef ADVERTISING_CONTROLLER_MAX_NUM_JOBS
-#define ADVERTISING_CONTROLLER_MAX_NUM_JOBS 4
+#define ADVERTISING_CONTROLLER_MAX_NUM_JOBS 2
 #endif
 
 // ########### Flash Settings ##########################################
@@ -495,15 +495,15 @@ class Conf
         //Having two meshInConnections allows us to perform clustering more easily and
         //prevents most denial of service attacks
 #ifndef SIM_ENABLED
-        static constexpr u8 totalInConnections = 3;
-        static constexpr u8 totalOutConnections = 3;
+        static constexpr u8 totalInConnections = 2;
+        static constexpr u8 totalOutConnections = 2;
         u8 meshMaxInConnections = 2;
-        static constexpr u8 meshMaxOutConnections = 3;
+        static constexpr u8 meshMaxOutConnections = 2;
 #else
         u8 totalInConnections = 3;
-        u8 totalOutConnections = 3;
+        u8 totalOutConnections = 2;
         u8 meshMaxInConnections = 2;
-        u8 meshMaxOutConnections = 3;
+        u8 meshMaxOutConnections = 2;
 #endif // SIM_ENABLED
 
 #ifndef SIM_ENABLED

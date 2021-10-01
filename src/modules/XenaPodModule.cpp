@@ -55,6 +55,8 @@ XenaPodModule::XenaPodModule()
     //Enable the logtag for our vendor module template
     Logger::GetInstance().EnableTag("XENA");
 
+    FruityHal::PrintString("XENA POD");
+
     //Save configuration to base class variables
     //sizeof configuration must be a multiple of 4 bytes
     vendorConfigurationPointer = &configuration;
@@ -106,6 +108,7 @@ void XenaPodModule::ResetToDefaultConfiguration()
             "mismatch between board id / board type and "
             "featureset)"
         );
+        FruityHal::PrintString("TWI BAD PIN");
         return;//ErrorType::NOT_SUPPORTED;
     }
 
@@ -113,6 +116,8 @@ void XenaPodModule::ResetToDefaultConfiguration()
     Lis2dh12Pins pins;
     pins.pinsetIdentifier = PinsetIdentifier::LIS2DH12;
     getCustomPinset(&pins);
+
+    FruityHal::PrintString("TWI INIT");
 
     if (!FruityHal::TwiIsInitialized())
     {
@@ -123,6 +128,10 @@ void XenaPodModule::ResetToDefaultConfiguration()
     }
 
     u8 data[2];
+
+    FruityHal::TwiRegisterRead(IIS2DH_ADDR, IIS2DH_REG__WHO_AM_I, data, 1);
+    FruityHal::PrintString("WHO_AM_I: ");
+    FruityHal::PrintNumber(data[0]);
 
     // 5.376kHz Low-power Mode XYZ Enabled
     data[0] = IIS2DH_REG__CTRL_REG_1;
@@ -147,6 +156,9 @@ void XenaPodModule::ResetToDefaultConfiguration()
     data[0] = IIS2DH_REG__CLICK_CFG;
     data[1] = 0x10;
     FruityHal::TwiRegisterWrite(IIS2DH_ADDR, data, 2);
+
+
+    FruityHal::PrintString("XENA START DONE");
 
 }
 
@@ -184,6 +196,8 @@ void XenaPodModule::TimerEventHandler(u16 passedTimeDs)
             // or no valid measurement being present, skip restarting the
             // measurement
             if (err == ErrorType::FORBIDDEN || err == ErrorType::BUSY){
+                FruityHal::PrintString("TWI READ ERROR: ");
+                FruityHal::PrintNumber((u32)err);
                 return;
             }
 
@@ -192,11 +206,16 @@ void XenaPodModule::TimerEventHandler(u16 passedTimeDs)
             // if the measurement failed for any other reason skip sending
             // a message with potentially invalid data
             if (err != ErrorType::SUCCESS){
+                FruityHal::PrintString("TWI READ ERROR: ");
+                FruityHal::PrintNumber((u32)err);
                 return;
             }
         }
 
         //statusReporterModule ? statusReporterModule->GetBatteryVoltage() : 0xFF
+
+        //FruityHal::PrintString("CLICK_SRC: ");
+        //FruityHal::PrintNumber(rxData);
 
         if( rxData & 0x04 ){
             SendModuleActionMessage(

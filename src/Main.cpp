@@ -36,10 +36,10 @@ int main(void)
     DYNAMIC_ARRAY(halMemory, FruityHal::GetHalMemorySize());
     CheckedMemset(halMemory, 0, FruityHal::GetHalMemorySize());
     GS->halMemory = halMemory;
-    
+
     BootFruityMesh();
     GS->fruityMeshBooted = true;
-    
+
     const u32 moduleMemoryBlockSize = INITIALIZE_MODULES(false);
     //We must make sure that the memory block for allocating modules is aligned on an 8 byte boundary
     //This allows us to support 4 and 8 byte aligned modules
@@ -48,5 +48,7 @@ int main(void)
     BootModules();
     GS->modulesBooted = true;
     
+    FruityHal::PrintString("STARTING MESH");
+
     StartFruityMesh();
 }

@@ -202,7 +202,10 @@ private:
 #else //ACTIVATE_LOGGING
 
 #define logs(message, ...)          do{}while(0)
+
 #define logt(tag, message, ...)     do{}while(0)
+//#define logt(tag, message, ...) FruityHal::PrintString(message)
+
 #define TO_BASE64(data, dataSize)   do{}while(0)
 #define TO_BASE64_2(data, dataSize) do{}while(0)
 #define TO_HEX(data, dataSize)      do{}while(0)

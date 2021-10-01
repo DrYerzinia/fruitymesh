@@ -1,6 +1,6 @@
 target_compile_definitions_multi("${SDK_14_TARGETS}" "S132")
 target_compile_definitions_multi("${SDK_14_TARGETS}" "NRF52")
-target_compile_definitions_multi("${SDK_14_TARGETS}" "NRF52832_XXAA")
+target_compile_definitions_multi("${SDK_14_TARGETS}" "NRF52832_XXAB")
 target_compile_definitions_multi("${SDK_14_TARGETS}" "NRF52832")
 target_compile_definitions_multi("${SDK_14_TARGETS}" "SDK=14")
 target_compile_options_multi("${SDK_14_TARGETS}" "-mfloat-abi=hard")

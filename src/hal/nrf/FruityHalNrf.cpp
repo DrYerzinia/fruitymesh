@@ -287,6 +287,29 @@ static void soc_evt_handler(uint32_t evt_id, void * p_context);
 
 #endif
 
+void FruityHal::PrintNumber(u32 val){
+
+    char buffer[9];
+    buffer[8] = 0;
+
+    for(int i = 0; i < 8; i++){
+        int nib = (val >> (i * 4)) & 0xF;
+        if(nib < 10){
+            buffer[7-i] = 0x30+nib;
+        } else {
+            buffer[7-i] = 0x41-10+nib;
+        }
+    }
+
+    SEGGER_RTT_WriteString(0, buffer);
+    SEGGER_RTT_WriteString(0, EOL);
+}
+
+void FruityHal::PrintString(char const * str){
+    SEGGER_RTT_WriteString(0, str);
+    SEGGER_RTT_WriteString(0, EOL);
+}
+
 ErrorType FruityHal::BleStackInit()
 {
     u32 err = 0;
@@ -400,8 +423,21 @@ ErrorType FruityHal::BleStackInit()
         logt("ERROR", "BLE_GATTS_CFG_SERVICE_CHANGED %u", err);
     }
 
+    PrintString("STARTUP");
+
     //######### Enables the BLE stack
     err = nrf_sdh_ble_enable(&ram_start);
+
+    if (err){
+        PrintString(EOL "BLE ERROR: ");
+        PrintNumber((u32)err);
+        PrintString(EOL "Start: ");
+        PrintNumber((u32)ram_start);
+        PrintString(EOL "Length: ");
+        PrintNumber((u32)(getramend() - ram_start));
+        PrintString(EOL);
+    }
+
     const char* tag = "FH";
     if (err) tag = "ERROR";
     logt(tag, "Err %u, Linker Ram section should be at %x, len %x", err, (u32)ram_start, (u32)(getramend() - ram_start));

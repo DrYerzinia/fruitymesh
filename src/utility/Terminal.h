@@ -55,10 +55,10 @@ struct TerminalCommandQueueEntry
 #define TERMARGS(commandArgsIndex, compareTo)     (strcmp(commandArgs[commandArgsIndex], compareTo)==0)
 
 
-constexpr int MAX_TERMINAL_COMMAND_LISTENER_CALLBACKS = 20;
+constexpr int MAX_TERMINAL_COMMAND_LISTENER_CALLBACKS = 5;
 constexpr int MAX_TERMINAL_JSON_LISTENER_CALLBACKS = 1;
-constexpr int TERMINAL_READ_BUFFER_LENGTH = 300;
-constexpr int MAX_NUM_TERM_ARGS = 15;
+constexpr int TERMINAL_READ_BUFFER_LENGTH = 20;
+constexpr int MAX_NUM_TERM_ARGS = 5;
 
 enum class TerminalCommandHandlerReturnType : u8
 {

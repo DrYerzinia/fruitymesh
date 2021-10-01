@@ -333,6 +333,7 @@ void BootModules()
     CheckedMemset(GS->ramRetainStructPtr, 0, sizeof(RamRetainStruct));
     GS->ramRetainStructPtr->rebootReason = RebootReason::UNKNOWN_BUT_BOOTED;
     GS->ramRetainStructPtr->crc32 = Utility::CalculateCrc32((u8*)GS->ramRetainStructPtr, sizeof(RamRetainStruct) - 4);
+
 }
 
 void StartFruityMesh()            //LCOV_EXCL_LINE Simulated in a different way

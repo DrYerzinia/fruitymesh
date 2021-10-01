@@ -8030,7 +8030,7 @@
 // <i> or this value is actually used. It depends on which one is bigger.
 
 #ifndef SEGGER_RTT_CONFIG_BUFFER_SIZE_UP
-#define SEGGER_RTT_CONFIG_BUFFER_SIZE_UP 512
+#define SEGGER_RTT_CONFIG_BUFFER_SIZE_UP 256
 #endif
 
 // <o> SEGGER_RTT_CONFIG_MAX_NUM_UP_BUFFERS - Size of upstream buffer. 
@@ -8218,7 +8218,7 @@
 //Should also change in CherrySimTypes.h  in order to keep this value consistent
 //in both simulatore and frimware
 #ifndef NRF_SDH_BLE_GATT_MAX_MTU_SIZE
-#define NRF_SDH_BLE_GATT_MAX_MTU_SIZE 63
+#define NRF_SDH_BLE_GATT_MAX_MTU_SIZE 23
 #endif
 
 //***************************************

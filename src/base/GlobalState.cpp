@@ -50,10 +50,12 @@ __attribute__((section(".noinit"))) TemporaryEnrollment temporaryEnrollment;
  */
 GlobalState::GlobalState()
 {
+
     //Some initialization
 #ifndef SIM_ENABLED
     ramRetainStructPtr = &ramRetainStruct;
     ramRetainStructPreviousBootPtr = &ramRetainStructPreviousBoot;
+
     rebootMagicNumberPtr = &rebootMagicNumber;
     watchdogExtraInfoFlagsPtr = &watchdogExtraInfoFlags;
     temporaryEnrollmentPtr = &temporaryEnrollment;

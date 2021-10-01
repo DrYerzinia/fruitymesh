@@ -62,6 +62,10 @@
 #include "nrf52832_peripherals.h"
 #endif
 
+#ifdef NRF52832_XXAB
+#include "nrf52832_peripherals.h"
+#endif
+
 #ifdef NRF52840_XXAA
 #include "nrf52840_peripherals.h"
 #endif
