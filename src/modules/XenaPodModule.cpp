@@ -44,7 +44,7 @@ namespace
 {
 
     /// The interval between sensor measurements (and mesh broadcasts).
-    constexpr u16 DEFAULT_SENSOR_MEASUREMENT_INTERVAL_DS = 30;
+    constexpr u16 DEFAULT_SENSOR_MEASUREMENT_INTERVAL_DS = 10;
 
 }
 
@@ -63,6 +63,25 @@ XenaPodModule::XenaPodModule()
     //Set defaults
     ResetToDefaultConfiguration();
 }
+
+// CTRL_REG2 0x04 HP
+// CTRL_REG4 0x80 BDU
+
+#define IIS2DH_ADDR              0x19
+
+#define IIS2DH_REG__WHO_AM_I     0x0F
+#define IIS2DH_REG__CTRL_REG_1   0x20
+#define IIS2DH_REG__CTRL_REG_2   0x21
+#define IIS2DH_REG__CTRL_REG_3   0x22
+#define IIS2DH_REG__CTRL_REG_4   0x23
+#define IIS2DH_REG__CTRL_REG_5   0x24
+#define IIS2DH_REG__CTRL_REG_6   0x26
+#define IIS2DH_REG__CLICK_CFG    0x38
+#define IIS2DH_REG__CLICK_SRC    0x39
+#define IIS2DH_REG__CLICK_THS    0x3A
+#define IIS2DH_REG__TIME_LIMIT   0x3B
+#define IIS2DH_REG__TIME_LATENCY 0x3C
+#define IIS2DH_REG__TIME_WINDOW  0x3D
 
 void XenaPodModule::ResetToDefaultConfiguration()
 {
@@ -103,9 +122,33 @@ void XenaPodModule::ResetToDefaultConfiguration()
         );
     }
 
-}
+    u8 data[2];
 
-#define WHO_AM_I 0x0F
+    // 5.376kHz Low-power Mode XYZ Enabled
+    data[0] = IIS2DH_REG__CTRL_REG_1;
+    data[1] = 0x5F;
+    FruityHal::TwiRegisterWrite(IIS2DH_ADDR, data, 2);
+
+    // TODO High Pass Filter CTRL_REG_2
+
+    data[0] = IIS2DH_REG__CLICK_THS;
+    data[1] = 0x60;
+    FruityHal::TwiRegisterWrite(IIS2DH_ADDR, data, 2);
+
+    data[0] = IIS2DH_REG__TIME_LIMIT;
+    data[1] = 0x05;
+    FruityHal::TwiRegisterWrite(IIS2DH_ADDR, data, 2);
+
+    data[0] = IIS2DH_REG__TIME_LATENCY;
+    data[1] = 0x80;
+    FruityHal::TwiRegisterWrite(IIS2DH_ADDR, data, 2);
+
+    // Enable Z Single Click Interrupt
+    data[0] = IIS2DH_REG__CLICK_CFG;
+    data[1] = 0x10;
+    FruityHal::TwiRegisterWrite(IIS2DH_ADDR, data, 2);
+
+}
 
 void XenaPodModule::ConfigurationLoadedHandler(u8* migratableConfig, u16 migratableConfigLength)
 {
@@ -133,7 +176,8 @@ void XenaPodModule::TimerEventHandler(u16 passedTimeDs)
         // read the sensor data
         u8 rxData;
         {
-            const auto err = FruityHal::TwiRegisterRead(0x19, WHO_AM_I, &rxData, 1);
+
+            const auto err = FruityHal::TwiRegisterRead(IIS2DH_ADDR, IIS2DH_REG__CLICK_SRC, &rxData, 1);
 
 
             // if the read failed due to the sensor being in the wrong state
@@ -154,16 +198,18 @@ void XenaPodModule::TimerEventHandler(u16 passedTimeDs)
 
         //statusReporterModule ? statusReporterModule->GetBatteryVoltage() : 0xFF
 
-        // send the broadcast message to all nodes
-        /*SendModuleActionMessage(
-            MessageType::MODULE_TRIGGER_ACTION, // message type
-            NODE_ID_BROADCAST,                  // destination node id
-            (u8)TriggerActionType::SENSOR_DATA,    
-            0,                                  // request handle
-            (const u8*)&msg,                    // data pointer
-            sizeof(msg),                        // data length
-            false                               // reliable
-        );*/
+        if( rxData & 0x04 ){
+            SendModuleActionMessage(
+                MessageType::COMPONENT_SENSE,       // message type
+                NODE_ID_BROADCAST,                  // destination node id
+                (u8)TriggerActionType::TAP_DETECTED,    
+                0,                                  // request handle
+                (const u8*)&rxData,                 // data pointer
+                sizeof(1),                          // data length
+                false                               // reliable
+            );
+            FruityHal::PrintString("TAP");
+        }
 
         logt("XENA", "sensor data sent to node %u", (u32)NODE_ID_BROADCAST);
     }();

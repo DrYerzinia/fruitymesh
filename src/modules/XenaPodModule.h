@@ -69,6 +69,7 @@ class XenaPodModule : public Module
     enum class TriggerActionType : u8
     {
         SENSOR_DATA = 1,
+        TAP_DETECTED = 2
     };
 
     enum class ActionResponseType : u8
