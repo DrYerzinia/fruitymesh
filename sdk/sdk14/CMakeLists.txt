@@ -1,17 +1,29 @@
 target_compile_definitions_multi("${SDK_14_TARGETS}" "S132")
 target_compile_definitions_multi("${SDK_14_TARGETS}" "NRF52")
-target_compile_definitions_multi("${SDK_14_TARGETS}" "NRF52832_XXAB")
+#target_compile_definitions_multi("${SDK_14_TARGETS}" "NRF52832_XXAB")
+target_compile_definitions_multi("${SDK_14_TARGETS}" "NRF52832_XXAA")
 target_compile_definitions_multi("${SDK_14_TARGETS}" "NRF52832")
 target_compile_definitions_multi("${SDK_14_TARGETS}" "SDK=14")
 target_compile_options_multi("${SDK_14_TARGETS}" "-mfloat-abi=hard")
 target_compile_options_multi("${SDK_14_TARGETS}" "-mfpu=fpv4-sp-d16")
 target_link_options_multi("${SDK_14_TARGETS}" "-mfloat-abi=hard")
 target_link_options_multi("${SDK_14_TARGETS}" "-mfpu=fpv4-sp-d16")
+#target_link_options_multi("${SDK_14_TARGETS}" "-T${PROJECT_SOURCE_DIR}/linker/gcc_nrf52832_s132v5_32kb.ld")
 target_link_options_multi("${SDK_14_TARGETS}" "-T${PROJECT_SOURCE_DIR}/linker/gcc_nrf52832_s132v5_64kb.ld")
 target_link_options_multi("${SDK_14_TARGETS}" "-T${PROJECT_SOURCE_DIR}/linker/nrf5x_common.ld")
 
+target_link_libraries_multi("${SDK_14_TARGETS}" "${PROJECT_SOURCE_DIR}/sdk/sdk14/components/nfc/t2t_lib/nfc_t2t_lib_gcc.a")
+
 target_sources_multi("${SDK_14_TARGETS}" "./components/toolchain/gcc/gcc_startup_nrf52.s")
 target_sources_multi("${SDK_14_TARGETS}" "./components/toolchain/system_nrf52.c")
+
+target_sources_multi("${SDK_14_TARGETS}" "./components/nfc/ndef/generic/message/nfc_ndef_msg.c")
+target_sources_multi("${SDK_14_TARGETS}" "./components/nfc/ndef/generic/record/nfc_ndef_record.c")
+target_sources_multi("${SDK_14_TARGETS}" "./components/nfc/ndef/text/nfc_text_rec.c")
+target_sources_multi("${SDK_14_TARGETS}" "./components/nfc/t2t_lib/hal_t2t/hal_nfc_t2t.c")
+
+target_sources_multi("${SDK_14_TARGETS}" "./components/drivers_nrf/clock/nrf_drv_clock.c")
+
 target_sources_multi("${SDK_14_TARGETS}" "./components/libraries/util/app_util_platform.c")
 target_sources_multi("${SDK_14_TARGETS}" "./components/libraries/hardfault/nrf52/handler/hardfault_handler_gcc.c")
 target_sources_multi("${SDK_14_TARGETS}" "./components/libraries/experimental_section_vars/nrf_section_iter.c")
@@ -28,10 +40,15 @@ target_sources_multi("${SDK_14_TARGETS}" "./components/softdevice/common/nrf_sdh
 
 
 target_include_directories_system_multi("${SDK_14_TARGETS}" "../config_nrf52")
+target_include_directories_system_multi("${SDK_14_TARGETS}" "./components/nfc/ndef/text")
+target_include_directories_system_multi("${SDK_14_TARGETS}" "./components/nfc/ndef/generic/message")
+target_include_directories_system_multi("${SDK_14_TARGETS}" "./components/nfc/ndef/generic/record")
+target_include_directories_system_multi("${SDK_14_TARGETS}" "./components/nfc/t2t_lib")
 target_include_directories_system_multi("${SDK_14_TARGETS}" "./components/ble/common")
 target_include_directories_system_multi("${SDK_14_TARGETS}" "./components/ble/ble_db_discovery")
 target_include_directories_system_multi("${SDK_14_TARGETS}" "./components/ble/ble_services/ble_dfu")
 target_include_directories_system_multi("${SDK_14_TARGETS}" "./components/device")
+target_include_directories_system_multi("${SDK_14_TARGETS}" "./components/drivers_nrf/clock")
 target_include_directories_system_multi("${SDK_14_TARGETS}" "./components/drivers_nrf/common")
 target_include_directories_system_multi("${SDK_14_TARGETS}" "./components/drivers_nrf/delay")
 target_include_directories_system_multi("${SDK_14_TARGETS}" "./components/drivers_nrf/gpiote")

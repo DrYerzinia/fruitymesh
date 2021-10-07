@@ -40,10 +40,10 @@
 
 class StatusReporterModule;
 
-constexpr u8 XENA_POD_ID_LSB = 0xff;
-constexpr u8 XENA_POD_ID_MSB = 0xff;
+constexpr u8 XENA_POD_ID_LSB = 0xFF;
+constexpr u8 XENA_POD_ID_MSB = 0xFF;
 
-//Ruuvi Innovations Ltd., Module 1
+// XENA POD
 constexpr VendorModuleId XENA_POD_MODULE_ID = GET_VENDOR_MODULE_ID(
   (XENA_POD_ID_MSB << 8) |XENA_POD_ID_LSB, 1
 );

@@ -1676,7 +1676,7 @@
 // <e> CLOCK_ENABLED - nrf_drv_clock - CLOCK peripheral driver
 //==========================================================
 #ifndef CLOCK_ENABLED
-#define CLOCK_ENABLED 0
+#define CLOCK_ENABLED 1
 #endif
 // <o> CLOCK_CONFIG_XTAL_FREQ  - HF XTAL Frequency
  
@@ -6547,7 +6547,7 @@
 // <e> NFC_NDEF_MSG_ENABLED - nfc_ndef_msg - NFC NDEF Message generator module
 //==========================================================
 #ifndef NFC_NDEF_MSG_ENABLED
-#define NFC_NDEF_MSG_ENABLED 0
+#define NFC_NDEF_MSG_ENABLED 1
 #endif
 // <o> NFC_NDEF_MSG_TAG_TYPE  - NFC Tag Type
  
@@ -6647,7 +6647,7 @@
 // <e> NFC_T2T_HAL_ENABLED - nfc_t2t_hal - Hardware Abstraction Layer for NFC library.
 //==========================================================
 #ifndef NFC_T2T_HAL_ENABLED
-#define NFC_T2T_HAL_ENABLED 0
+#define NFC_T2T_HAL_ENABLED 1
 #endif
 // <o> NFCT_CONFIG_IRQ_PRIORITY  - Interrupt priority
  

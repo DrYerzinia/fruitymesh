@@ -85,6 +85,58 @@ XenaPodModule::XenaPodModule()
 #define IIS2DH_REG__TIME_LATENCY 0x3C
 #define IIS2DH_REG__TIME_WINDOW  0x3D
 
+#define MAX_REC_COUNT      3     /**< Maximum records count. */
+
+static const uint8_t en_payload[] = "Meow!";
+static const uint8_t en_code[] = "en";
+
+#include <nfc_t2t_lib.h>
+#include <nfc_ndef_msg.h>
+#include <nfc_text_rec.h>
+
+uint8_t m_ndef_msg_buf[32];
+
+static void nfc_callback(void * p_context, nfc_t2t_event_t event, const uint8_t * p_data, size_t data_length)
+{
+    (void)p_context;
+
+    switch (event)
+    {
+        case NFC_T2T_EVENT_FIELD_ON:
+            FruityHal::PrintString("FIELD");
+            break;
+        case NFC_T2T_EVENT_FIELD_OFF:
+            FruityHal::PrintString("NO FIELD");
+            break;
+        default:
+            break;
+    }
+}
+
+static ret_code_t welcome_msg_encode(uint8_t * p_buffer, uint32_t * p_len)
+{
+    ret_code_t err_code;
+
+    NFC_NDEF_TEXT_RECORD_DESC_DEF(nfc_en_text_rec,
+                                  UTF_8,
+                                  en_code,
+                                  sizeof(en_code),
+                                  en_payload,
+                                  sizeof(en_payload));
+
+
+    NFC_NDEF_MSG_DEF(nfc_text_msg, MAX_REC_COUNT);
+
+    err_code = nfc_ndef_msg_record_add(&NFC_NDEF_MSG(nfc_text_msg),
+                                       &NFC_NDEF_TEXT_RECORD_DESC(nfc_en_text_rec));
+    FruityHal::PrintNumber(err_code);
+    err_code = nfc_ndef_msg_encode(&NFC_NDEF_MSG(nfc_text_msg),
+                                   p_buffer,
+                                   p_len);
+    return err_code;
+}
+
+
 void XenaPodModule::ResetToDefaultConfiguration()
 {
     //Set default configuration values
@@ -94,6 +146,18 @@ void XenaPodModule::ResetToDefaultConfiguration()
 
     configuration.sensorMeasurementIntervalDs = DEFAULT_SENSOR_MEASUREMENT_INTERVAL_DS;
 
+
+    uint32_t  len = sizeof(m_ndef_msg_buf);
+    uint32_t  err_code;
+    FruityHal::PrintString("INIT_NFC");
+    err_code = nfc_t2t_setup(nfc_callback, NULL);
+    FruityHal::PrintNumber(err_code);
+    err_code = welcome_msg_encode(m_ndef_msg_buf, &len);
+    FruityHal::PrintNumber(err_code);
+    err_code = nfc_t2t_payload_set(m_ndef_msg_buf, len);
+    FruityHal::PrintNumber(err_code);
+    err_code = nfc_t2t_emulation_start();
+    FruityHal::PrintNumber(err_code);
 
     //This line allows us to have different configurations of this module depending on the featureset
     SET_FEATURESET_CONFIGURATION_VENDOR(&configuration, this);
@@ -186,10 +250,10 @@ void XenaPodModule::TimerEventHandler(u16 passedTimeDs)
             return;
 
         // read the sensor data
-        u8 rxData;
+        u8 rxData[4];
         {
 
-            const auto err = FruityHal::TwiRegisterRead(IIS2DH_ADDR, IIS2DH_REG__CLICK_SRC, &rxData, 1);
+            const auto err = FruityHal::TwiRegisterRead(IIS2DH_ADDR, IIS2DH_REG__CLICK_SRC, rxData, 1);
 
 
             // if the read failed due to the sensor being in the wrong state
@@ -217,14 +281,14 @@ void XenaPodModule::TimerEventHandler(u16 passedTimeDs)
         //FruityHal::PrintString("CLICK_SRC: ");
         //FruityHal::PrintNumber(rxData);
 
-        if( rxData & 0x04 ){
+        if( rxData[0] & 0x04 ){
             SendModuleActionMessage(
-                MessageType::COMPONENT_SENSE,       // message type
+                MessageType::MODULE_RAW_DATA_LIGHT, // message type
                 NODE_ID_BROADCAST,                  // destination node id
-                (u8)TriggerActionType::TAP_DETECTED,    
+                (u8)TriggerActionType::TAP_DETECTED,
                 0,                                  // request handle
-                (const u8*)&rxData,                 // data pointer
-                sizeof(1),                          // data length
+                (const u8*)rxData,                  // data pointer
+                sizeof(rxData),                     // data length
                 false                               // reliable
             );
             FruityHal::PrintString("TAP");
