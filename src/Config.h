@@ -145,7 +145,7 @@ static_assert(false, "Featureset was not defined, which is mandatory!");
 
 // Each of the connections has a buffer for outgoing packets, this is its size in bytes
 #ifndef MAX_MESH_PACKET_SIZE
-#define MAX_MESH_PACKET_SIZE 20
+#define MAX_MESH_PACKET_SIZE 24
 #endif
 
 // The size of each send queue chunk in bytes. See: ConnectionQueueMemoryChunk
