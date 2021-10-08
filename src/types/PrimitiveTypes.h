@@ -68,10 +68,12 @@ typedef uint8_t u8;
 typedef uint16_t u16;
 typedef unsigned u32;   //This is not defined uint32_t because GCC defines uint32_t as unsigned long, 
                         //which is a problem when working with printf placeholders.
+typedef uint64_t u64;
 
 //Signed ints
 typedef int8_t i8;
 typedef int16_t i16;
+typedef int64_t i64;
 typedef int i32;        //This is not defined int32_t because GCC defines int32_t as long,
                         //which is a problem when working with printf placeholders.
 
