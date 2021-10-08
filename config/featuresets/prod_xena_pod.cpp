@@ -56,7 +56,7 @@ void SetFeaturesetConfiguration_prod_xena_pod(ModuleConfiguration* config, void*
     if (config->moduleId == ModuleId::CONFIG)
     {
         Conf::GetInstance().defaultLedMode = LedMode::OFF;
-        Conf::GetInstance().terminalMode = TerminalMode::DISABLED;
+        Conf::GetInstance().terminalMode = TerminalMode::PROMPT;
 
         // Set the discovery timeout by default to reduce battery usage.
         Conf::GetInstance().highDiscoveryTimeoutSec = 60;
@@ -112,12 +112,12 @@ DeviceType GetDeviceType_prod_xena_pod()
 
 Chipset GetChipset_prod_xena_pod()
 {
-    return Chipset::CHIP_NRF52;
+    return Chipset::CHIP_NRF52833;
 }
 
 FeatureSetGroup GetFeatureSetGroup_prod_xena_pod()
 {
-    return FeatureSetGroup::NRF52_RV_WEATHER_MESH;
+    return FeatureSetGroup::XENA_POD;
 }
 
 u32 GetWatchdogTimeout_prod_xena_pod()

@@ -42,10 +42,10 @@ void SetBoard_32(BoardConfiguration* c)
         c->ledActiveHigh =  false;
         c->button1Pin =  -1;
         c->buttonsActiveHigh =  false;
-        c->uartRXPin =  7;
-        c->uartTXPin =  8;
-        c->uartCTSPin =  -1;
-        c->uartRTSPin =  -1;
+        c->uartRXPin =  8;
+        c->uartTXPin =  6;
+        c->uartCTSPin =  7;
+        c->uartRTSPin =  5;
         c->uartBaudRate = (u32)FruityHal::UartBaudrate::BAUDRATE_1M;
         c->dBmRX = -96;
         c->calibratedTX =  -60;
@@ -66,11 +66,11 @@ void SetCustomPins_32(CustomPins* pinConfig){
         Lis2dh12Pins* pins = (Lis2dh12Pins*)pinConfig;
         pins->misoPin = -1;
         pins->mosiPin = -1;
-        pins->sckPin = 6;
+        pins->sckPin = 27;
         pins->ssPin =-1;
         pins->sensorEnablePinActiveHigh = true;
         pins->sensorEnablePin = -1;
-        pins->sdaPin = 5;
+        pins->sdaPin = 26;
         pins->interrupt1Pin = -1;
         pins->interrupt2Pin = -1;
     }

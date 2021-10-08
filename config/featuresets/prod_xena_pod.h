@@ -28,9 +28,10 @@
 // ****************************************************************************/
 ////////////////////////////////////////////////////////////////////////////////
 
-#define ACTIVATE_LOGGING    0
-#define ACTIVATE_UART       0
-#define ACTIVATE_SEGGER_RTT 0
+#define ACTIVATE_LOGGING    1
+#define ACTIVATE_JSON_LOGGING 1
+#define ACTIVATE_UART       1
+#define ACTIVATE_SEGGER_RTT 1
 
 #define ACTIVATE_XENA_POD_MODULE      1
 
