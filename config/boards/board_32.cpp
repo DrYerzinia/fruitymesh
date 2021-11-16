@@ -30,6 +30,9 @@
 #include <FruityHal.h>
 #include<GlobalState.h>
 #include <Boardconfig.h>
+
+#include <nrf_gpio.h>
+
 void SetCustomPins_32(CustomPins* pinConfig);
 // Xena Pod
 void SetBoard_32(BoardConfiguration* c)
@@ -73,6 +76,18 @@ void SetCustomPins_32(CustomPins* pinConfig){
         pins->sdaPin = 26;
         pins->interrupt1Pin = -1;
         pins->interrupt2Pin = -1;
+    } else if(pinConfig->pinsetIdentifier == PinsetIdentifier::I2C){
+        I2CPins* pins = (I2CPins*)pinConfig;
+        pins->sclPin = NRF_GPIO_PIN_MAP(1, 3);
+        pins->sdaPin = NRF_GPIO_PIN_MAP(1, 2);
+    } else if(pinConfig->pinsetIdentifier == PinsetIdentifier::ST95HF){
+        ST95HFPins* pins = (ST95HFPins*)pinConfig;
+        pins->misoPin = 22;
+        pins->mosiPin = 21;
+        pins->sckPin = 23;
+        pins->ssPin = 20;
+        pins->irqInPin = 17;
+        pins->irqOutPin = 3;
     }
 
 }

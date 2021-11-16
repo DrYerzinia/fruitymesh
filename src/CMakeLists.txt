@@ -2,6 +2,7 @@ add_subdirectory(../config ${CMAKE_CURRENT_BINARY_DIR}/config)
 
 add_subdirectory(base)
 add_subdirectory(c)
+add_subdirectory(drivers)
 add_subdirectory(examples)
 add_subdirectory(mesh)
 add_subdirectory(modules)
