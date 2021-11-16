@@ -85,3 +85,5 @@ sourceDistributions/*
 
 /sdk/wiced_btsdk/dev-kit/baselib/20819A1/build
 /sdk/wiced_btsdk/dev-kit/bsp/TARGET_CYW920819EVB-02/build
+
+gcc-arm-none-eabi-4_9-2015q3
