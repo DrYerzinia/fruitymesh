@@ -324,6 +324,8 @@ enum class PinsetIdentifier : u16 {
     TLV493D = 3, //Magnetometer
     BMG250 = 4, //Gyroscope
     GDEWO27W3 = 5, //Eink Display
+    ST95HF = 6, // NFC Interface
+    I2C = 7, // Generic I2C bus
 };
 
 struct CustomPins {
@@ -380,6 +382,21 @@ struct Gdewo27w3Pins : CustomPins {
     i32 busyPin = -1;
     i32 epdEnablePin = -1;
     bool epdEnablePinActiveHigh = true;
+};
+
+struct I2CPins : CustomPins {
+    i32 sclPin = -1;
+    i32 sdaPin = -1;
+};
+
+
+struct ST95HFPins : CustomPins {
+    i32 mosiPin = -1;
+    i32 misoPin = -1;
+    i32 sckPin = -1;
+    i32 ssPin = -1;
+    i32 irqInPin = -1;
+    i32 irqOutPin = -1;
 };
 
 // Not as primitive as one might hope but other primitive types require this class.

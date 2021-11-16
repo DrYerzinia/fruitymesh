@@ -3873,7 +3873,7 @@ void FruityHal::SpiInit(i32 sckPin, i32 misoPin, i32 mosiPin)
     spi_config.sck_pin = (u32)sckPin;
     spi_config.miso_pin = (misoPin == -1) ? NRF_DRV_SPI_PIN_NOT_USED : (u32)misoPin;
     spi_config.mosi_pin = (mosiPin == -1) ? NRF_DRV_SPI_PIN_NOT_USED : (u32)mosiPin;
-    spi_config.frequency = NRF_DRV_SPI_FREQ_4M;
+    spi_config.frequency = NRF_DRV_SPI_FREQ_1M;
 
     FRUITYMESH_ERROR_CHECK(nrf_drv_spi_init(&spi, &spi_config, spi_event_handler,NULL));
 
