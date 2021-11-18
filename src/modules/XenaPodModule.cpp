@@ -44,7 +44,7 @@ namespace
 {
 
     /// The interval between sensor measurements (and mesh broadcasts).
-    constexpr u16 DEFAULT_SENSOR_MEASUREMENT_INTERVAL_DS = 100; //10;
+    constexpr u16 DEFAULT_SENSOR_MEASUREMENT_INTERVAL_DS = 100;
 
 }
 
@@ -105,8 +105,11 @@ void XenaPodModule::ResetToDefaultConfiguration()
         );
     }
 
-    u8 chip_id = bme688.init();
-    logt("XENA", "BME688 CHIPID: %d", chip_id);
+    u8 chip_id_bme688 = bme688.init();
+    logt("XENA", "BME688 CHIPID: %d", chip_id_bme688);
+
+    u8 chip_id_iis2dh = iis2dh.init();
+    logt("XENA", "IIS2DH CHIPID: %d", chip_id_iis2dh);
 
     /*
 
@@ -170,47 +173,65 @@ void XenaPodModule::TimerEventHandler(u16 passedTimeDs)
     [this] {
         const auto currentTime = GS->appTimerDs;
 
-        if (currentTime - lastMeasurementAppTimer <= configuration.sensorMeasurementIntervalDs)
-            return;
+        if (currentTime - lastBME688MeasurementAppTimer >= configuration.sensorMeasurementIntervalDs)
+        {
 
-        logt("XENA", "Measuring"); 
+            i16 temp;
+            i32 pressure;
+            i32 humidity;
 
-        i16 temp;
-        i32 pressure;
-        i32 humidity;
+            const auto err = bme688.read_sensors(temp, pressure, humidity);
 
-        const auto err = bme688.read_sensors(temp, pressure, humidity);
+            if(err == ErrorType::SUCCESS) {
+                lastBME688MeasurementAppTimer = currentTime;
+            } else {
+                return;
+            }
 
-        if(err == ErrorType::SUCCESS) {
-            lastMeasurementAppTimer = currentTime;
-        } else {
-            return;
+            logt("XENA", "Temperature: %d.%d C", temp / 100, temp % 100);
+            logt("XENA", "Pressure: %u.%u hPa", (u32) pressure / 100, pressure % 100);
+            logt("XENA", "Humidity: %u.%u %%RH", (u32) humidity / 1000, humidity % 1000);
+
+            //statusReporterModule ? statusReporterModule->GetBatteryVoltage() : 0xFF
+
+            bme688.start_measurment();
+
+            u8 txData[10];
+            memcpy(txData + 0, &temp, sizeof(temp));
+            memcpy(txData + 2, &pressure, sizeof(pressure));
+            memcpy(txData + 6, &humidity, sizeof(humidity));
+
+            SendModuleActionMessage(
+                MessageType::MODULE_RAW_DATA_LIGHT, // message type
+                NODE_ID_BROADCAST,                  // destination node id
+                (u8)TriggerActionType::TAP_DETECTED,
+                0,                                  // request handle
+                (const u8*)txData,                  // data pointer
+                sizeof(txData),                     // data length
+                false                               // reliable
+            );
+
+            logt("XENA", "sensor data sent to node %u", (u32)NODE_ID_BROADCAST);
+
         }
 
-        logt("XENA", "Temperature: %d.%d C", temp / 100, temp % 100);
-        logt("XENA", "Pressure: %u.%u hPa", (u32) pressure / 100, pressure % 100);
-        logt("XENA", "Humidity: %u.%u %%RH", (u32) humidity / 1000, humidity % 1000);
+        if (currentTime - lastIIS2DHMeasurementAppTimer >= 10) // TODO interrupt based
+        {
 
-        //statusReporterModule ? statusReporterModule->GetBatteryVoltage() : 0xFF
+            u8 click_src;
+            const auto err = iis2dh.poll(click_src);
 
-        bme688.start_measurment();
+            if(err == ErrorType::SUCCESS) {
+                lastIIS2DHMeasurementAppTimer = currentTime;
+            } else {
+                return;
+            }
 
-        u8 txData[10];
-        memcpy(txData + 0, &temp, sizeof(temp));
-        memcpy(txData + 2, &pressure, sizeof(pressure));
-        memcpy(txData + 6, &humidity, sizeof(humidity));
+            if( click_src & 0x04 ){
+                logt("XENA", "CLICK | SRC: %d", click_src);
+            }
 
-        SendModuleActionMessage(
-            MessageType::MODULE_RAW_DATA_LIGHT, // message type
-            NODE_ID_BROADCAST,                  // destination node id
-            (u8)TriggerActionType::TAP_DETECTED,
-            0,                                  // request handle
-            (const u8*)txData,                  // data pointer
-            sizeof(txData),                     // data length
-            false                               // reliable
-        );
-
-        logt("XENA", "sensor data sent to node %u", (u32)NODE_ID_BROADCAST);
+        }
 
     }();
 

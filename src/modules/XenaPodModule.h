@@ -38,6 +38,7 @@
 
 #include "ST95HF.h"
 #include "BME688.h"
+#include "IIS2DH.h"
 
 #if IS_ACTIVE(XENA_POD_MODULE)
 
@@ -82,12 +83,13 @@ class XenaPodModule : public Module
 private:
 
     ST95HF nfc;
-
     BME688 bme688;
+    IIS2DH iis2dh;
 
     std::array<u8, 64> transmissionBuffer;
 
-    u32 lastMeasurementAppTimer = 0;
+    u32 lastBME688MeasurementAppTimer = 0;
+    u32 lastIIS2DHMeasurementAppTimer = 0;
 
     StatusReporterModule *statusReporterModule = nullptr;
 

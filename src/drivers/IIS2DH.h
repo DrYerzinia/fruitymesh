@@ -1,5 +1,7 @@
 #pragma once
 
+#include "FruityHal.h"
+
 #define IIS2DH_ADDR                 0x19
 
 #define IIS2DH_REG__WHO_AM_I        0x0F
@@ -15,3 +17,15 @@
 #define IIS2DH_REG__TIME_LIMIT      0x3B
 #define IIS2DH_REG__TIME_LATENCY    0x3C
 #define IIS2DH_REG__TIME_WINDOW     0x3D
+
+class IIS2DH
+{
+public:
+
+    IIS2DH();
+
+    u8 init();
+
+    ErrorType poll(u8 &click_src);
+
+};
