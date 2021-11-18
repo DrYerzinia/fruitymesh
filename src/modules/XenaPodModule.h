@@ -37,6 +37,7 @@
 #include <type_traits>
 
 #include "ST95HF.h"
+#include "BME688.h"
 
 #if IS_ACTIVE(XENA_POD_MODULE)
 
@@ -82,6 +83,8 @@ private:
 
     ST95HF nfc;
 
+    BME688 bme688;
+
     std::array<u8, 64> transmissionBuffer;
 
     u32 lastMeasurementAppTimer = 0;
@@ -89,29 +92,6 @@ private:
     StatusReporterModule *statusReporterModule = nullptr;
 
     u16 measurementSequenceNumber = 0;
-
-    u16 t1;
-    i16 t2;
-    i8  t3;
-
-    u16 p1;
-    i16 p2;
-    i8  p3;
-    i16 p4;
-    i16 p5;
-    i8  p6;
-    i8  p7;
-    i16 p8;
-    i16 p9;
-    u8  p10;
-
-    u16 h1;
-    u16 h2;
-    i8  h3;
-    i8  h4;
-    i8  h5;
-    u8  h6;
-    i8  h7;
 
 public:
     DECLARE_CONFIG_AND_PACKED_STRUCT(XenaPodModuleConfiguration);

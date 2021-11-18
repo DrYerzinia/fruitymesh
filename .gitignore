@@ -87,3 +87,6 @@ sourceDistributions/*
 /sdk/wiced_btsdk/dev-kit/bsp/TARGET_CYW920819EVB-02/build
 
 gcc-arm-none-eabi-4_9-2015q3
+gcc-arm-embedded-4.9-2015q3
+
+venv

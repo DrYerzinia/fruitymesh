@@ -1,5 +1,7 @@
 #pragma once
 
+#include "FruityHal.h"
+
 #define BME688_ADDR                 0x76
 
 #define BME688_REG__MEAS_STATUS_0   0x1D
@@ -54,3 +56,41 @@
 #define BME688_REG__PAR_T3           0x8C
 
 #define BME688_REG__CHIP_ID         0xD0 // 0x61
+
+class BME688
+{
+public:
+
+    BME688();
+
+    u8 init();
+
+    void start_measurment();
+    ErrorType read_sensors(i16 &calc_temp, i32 &pressure_comp, i32 &calc_hum);
+
+private:
+
+    u16 t1;
+    i16 t2;
+    i8  t3;
+
+    u16 p1;
+    i16 p2;
+    i8  p3;
+    i16 p4;
+    i16 p5;
+    i8  p6;
+    i8  p7;
+    i16 p8;
+    i16 p9;
+    u8  p10;
+
+    u16 h1;
+    u16 h2;
+    i8  h3;
+    i8  h4;
+    i8  h5;
+    u8  h6;
+    i8  h7;
+
+};
