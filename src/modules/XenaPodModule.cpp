@@ -92,65 +92,6 @@ void XenaPodModule::ResetToDefaultConfiguration()
         return;//ErrorType::NOT_SUPPORTED;
     }
 
-    // Setup I2C pins
-    I2CPins pins_i2c;
-    pins_i2c.pinsetIdentifier = PinsetIdentifier::I2C;
-    getCustomPinset(&pins_i2c);
-
-    if (!FruityHal::TwiIsInitialized())
-    {
-        FruityHal::TwiInit(
-            pins_i2c.sclPin,
-            pins_i2c.sdaPin
-        );
-    }
-
-    u8 chip_id_bme688 = bme688.init();
-    logt("XENA", "BME688 CHIPID: %d", chip_id_bme688);
-
-    u8 chip_id_iis2dh = iis2dh.init();
-    logt("XENA", "IIS2DH CHIPID: %d", chip_id_iis2dh);
-
-    /*
-
-    // Setup SPI pins
-    ST95HFPins pins_st95hf;
-    pins_st95hf.pinsetIdentifier = PinsetIdentifier::ST95HF;
-    getCustomPinset(&pins_st95hf);
-
-    if (!FruityHal::SpiIsInitialized())
-    {
-        FruityHal::SpiInit(
-            pins_st95hf.sckPin,
-            pins_st95hf.misoPin,
-            pins_st95hf.mosiPin
-        );
-
-    }
-
-    nfc.init(pins_st95hf);
-
-    {
-        u8 buffer[3];
-        nfc.command(ST95HF::Command::IDN, buffer, sizeof(buffer));
-    }
-
-    // Check data ready
-    //logt("XENA", "INT %d", FruityHal::GpioPinRead(pins_st95hf.irqOutPin));
-
-    {
-
-        u8 rx[32];
-        nfc.read(rx, 32);
-
-        //char cbuffer[100];
-        //Logger::ConvertBufferToHexString(rx, 32, cbuffer, sizeof(cbuffer));
-        //logt("XENA", "Reply %s, len %u", cbuffer, 32);
-        logt("XENA", "IDN: %s, ROMCRC: 0x%x", rx+3, (u16) ((rx[16] << 8 ) | rx[17]));
-
-    }
-    */
-
 }
 
 void XenaPodModule::ConfigurationLoadedHandler(u8* migratableConfig, u16 migratableConfigLength)
@@ -173,33 +114,12 @@ void XenaPodModule::TimerEventHandler(u16 passedTimeDs)
     [this] {
         const auto currentTime = GS->appTimerDs;
 
-        if (currentTime - lastBME688MeasurementAppTimer >= configuration.sensorMeasurementIntervalDs)
+        if (currentTime - lastBroadcastMeasurementAppTimer >= configuration.sensorMeasurementIntervalDs)
         {
 
-            i16 temp;
-            i32 pressure;
-            i32 humidity;
+            lastBroadcastMeasurementAppTimer = currentTime;
 
-            const auto err = bme688.read_sensors(temp, pressure, humidity);
-
-            if(err == ErrorType::SUCCESS) {
-                lastBME688MeasurementAppTimer = currentTime;
-            } else {
-                return;
-            }
-
-            logt("XENA", "Temperature: %d.%d C", temp / 100, temp % 100);
-            logt("XENA", "Pressure: %u.%u hPa", (u32) pressure / 100, pressure % 100);
-            logt("XENA", "Humidity: %u.%u %%RH", (u32) humidity / 1000, humidity % 1000);
-
-            //statusReporterModule ? statusReporterModule->GetBatteryVoltage() : 0xFF
-
-            bme688.start_measurment();
-
-            u8 txData[10];
-            memcpy(txData + 0, &temp, sizeof(temp));
-            memcpy(txData + 2, &pressure, sizeof(pressure));
-            memcpy(txData + 6, &humidity, sizeof(humidity));
+            u8 txData[] = "Hello World!";
 
             SendModuleActionMessage(
                 MessageType::MODULE_RAW_DATA_LIGHT, // message type
@@ -212,24 +132,6 @@ void XenaPodModule::TimerEventHandler(u16 passedTimeDs)
             );
 
             logt("XENA", "sensor data sent to node %u", (u32)NODE_ID_BROADCAST);
-
-        }
-
-        if (currentTime - lastIIS2DHMeasurementAppTimer >= 10) // TODO interrupt based
-        {
-
-            u8 click_src;
-            const auto err = iis2dh.poll(click_src);
-
-            if(err == ErrorType::SUCCESS) {
-                lastIIS2DHMeasurementAppTimer = currentTime;
-            } else {
-                return;
-            }
-
-            if( click_src & 0x04 ){
-                logt("XENA", "CLICK | SRC: %d", click_src);
-            }
 
         }
 
